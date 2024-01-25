@@ -1,15 +1,33 @@
 ---
+import todoScheme from "../todoScheme";
+import { z } from "astro:content";
+
+type TODO = z.infer<typeof todoScheme>;
+interface Props {
+  todos: TODO[];
+}
+const { todos } = Astro.props;
 ---
 
-<li>
-  <div class="flex justify-between px-3 pb-3 pt-2 shadow-md group">
-    <input type="checkbox" class="w-1/12 peer" id="todo_1" />
-
-    <label for="todo_1" class="mx-1 w-9/12 peer-checked:line-through"
-      >hello</label
-    >
-    <button class="rounded w-2/12 bg-red-500 px-4 py-0 font-bold text-white">
-      DELETE
-    </button>
-  </div>
-</li>
+<ul class="bg-white space-y-4">
+  {
+    todos.map((todo: TODO) => (
+      <li>
+        <div class="flex justify-between px-3 pb-3 pt-2 shadow-md group">
+          <input
+            type="checkbox"
+            class="w-1/12 peer"
+            id="todo_1"
+            checked={todo.complete}
+          />
+          <label for="todo_1" class="mx-1 w-9/12 peer-checked:line-through">
+            {todo.title}
+          </label>
+          <button class="rounded w-2/12 bg-red-500 px-4 py-0 font-bold text-white">
+            DELETE
+          </button>
+        </div>
+      </li>
+    ))
+  }
+</ul>

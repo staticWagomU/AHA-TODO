@@ -4,6 +4,7 @@ import fs from "node:fs";
 try {
   if (!fs.existsSync("/tmp")) {
     fs.mkdirSync("/tmp");
+    fs.accessSync("/tmp");
   }
 } catch (err) {
   console.error(err);
@@ -50,8 +51,7 @@ try {
         <hr class="mb-2 mt-4" />
 
         <section>
-          <ul class="bg-white space-y-4" id="todo-list">
-          </ul>
+          <div id="todo-list" hx-get="/todos" hx-trigger="load once" hx-swap="innerHTML"></div>
         </section>
       </main>
     </body>

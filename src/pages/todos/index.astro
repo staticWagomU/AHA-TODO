@@ -1,0 +1,43 @@
+---
+import TodoList from "../../component/todoList.astro";
+import fs from "node:fs";
+import { todoFile } from "../../const";
+import { z } from "astro:content";
+import todoScheme from "../../todoScheme";
+export const partial = true;
+console.log("todos/index");
+
+type TODO = z.infer<typeof todoScheme>;
+let todos: TODO[] = [];
+try {
+  todos = JSON.parse(fs.readFileSync(todoFile, "utf-8").trim() || "[]");
+  todos.forEach((todo: TODO) => {
+    todoScheme.parse(todo);
+  });
+  const requestMethod = Astro.request.method;
+  if (requestMethod === "GET") {
+    console.log("GETだぜ")
+  } else if (requestMethod === "POST") {
+    const formData = await Astro.request.formData();
+    const todo = formData.get("todo") || "";
+    console.log(todo);
+    todos.push({
+      id: new Date().getTime(),
+      title: todo,
+      complete: false,
+    });
+    fs.writeFileSync(todoFile, JSON.stringify(todos));
+  } else {
+    throw new Error("Method not allowed");
+  }
+} catch (error) {
+  console.error(error);
+}
+---
+{
+  todos ? (
+    <TodoList todos={todos} />
+  ) : (
+    <p>TODOがありません。</p>
+  )
+}
