@@ -1,26 +1,27 @@
 ---
-import TodoList from "../../component/todoList.astro";
 import fs from "node:fs";
 import { todoFile } from "../../const";
 import { z } from "astro:content";
-import todoScheme from "../../todoScheme";
 export const partial = true;
-console.log("todos/index");
 
+const todoScheme =  z.object({
+  id: z.number(),
+  title: z.string(),
+  complete: z.boolean(),
+});
 type TODO = z.infer<typeof todoScheme>;
 let todos: TODO[] = [];
 try {
-  todos = JSON.parse(fs.readFileSync(todoFile, "utf-8").trim() || "[]");
+  todos = JSON.parse(fs.readFileSync(todoFile, "utf-8").trim());
   todos.forEach((todo: TODO) => {
     todoScheme.parse(todo);
   });
   const requestMethod = Astro.request.method;
   if (requestMethod === "GET") {
-    console.log("GETだぜ")
   } else if (requestMethod === "POST") {
     const formData = await Astro.request.formData();
     const todo = formData.get("todo") || "";
-    console.log(todo);
+
     todos.push({
       id: new Date().getTime(),
       title: todo,
@@ -34,9 +35,36 @@ try {
   console.error(error);
 }
 ---
+
 {
-  todos ? (
-    <TodoList todos={todos} />
+  todos.length ? (
+    <ul class="bg-white space-y-4">
+      {todos.map((todo: TODO) => (
+        <li>
+          <div
+            class="flex justify-between px-3 pb-3 pt-2 shadow-md group"
+            hx-target="submit"
+          >
+            <input
+              type="checkbox"
+              class="w-1/12 peer"
+              name="complete"
+              checked={todo.complete}
+            />
+            <input type="hidden" name="id" value={todo.id} />
+            <label for="todo_1" class="mx-1 w-9/12 peer-checked:line-through">
+              {todo.title}
+            </label>
+            <button
+              class="rounded w-2/12 bg-red-500 px-4 py-0 font-bold text-white"
+              hx-delete=`/todo/${todo.id}`
+            >
+              DELETE
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
   ) : (
     <p>TODOがありません。</p>
   )
