@@ -23,7 +23,6 @@ try {
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <title>AHA TODO</title>
   </head>
-  <body>
     <body class="min-w-full min-h-full flex justify-center flex-col">
       <header>
         <h1
@@ -33,7 +32,7 @@ try {
         </h1>
       </header>
 
-      <main
+      <div
         class="w-full max-w-2xl mx-auto rounded bg-gray-100 mt-3 px-8 pb-8 pt-6 shadow"
       >
         <form
@@ -42,13 +41,15 @@ try {
           hx-trigger="submit"
           hx-target="#todo-list"
           hx-swap="innerHTML"
-          onsubmit="target.reset()"
+          x-data="{ input: '' }"
+          @submit.prevent="if (input.trim() !== '') { $event.target.reset(); } else { return false; }"
         >
           <input
             class="focus:shadow-outline w-9/12 appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
             id="todo"
             name="todo"
             type="text"
+            x-model="input"
             placeholder="TODO"
           />
 
@@ -69,7 +70,6 @@ try {
           >
           </div>
         </section>
-      </main>
+      </div>
     </body>
-  </body>
 </html>
