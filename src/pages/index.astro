@@ -23,53 +23,55 @@ try {
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <title>AHA TODO</title>
   </head>
-    <body class="min-w-full min-h-full flex justify-center flex-col">
-      <header>
-        <h1
-          class="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl"
-        >
-          - TODO -
-        </h1>
-      </header>
-
-      <div
-        class="w-full max-w-2xl mx-auto rounded bg-gray-100 mt-3 px-8 pb-8 pt-6 shadow"
+  <body class="min-w-full min-h-full flex justify-center flex-col">
+    <header>
+      <h1
+        class="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl"
       >
-        <form
-          class="flex justify-between"
-          hx-post="/todos"
-          hx-trigger="submit"
-          hx-target="#todo-list"
+        - TODO -
+      </h1>
+    </header>
+
+    <div
+      class="w-full max-w-2xl mx-auto rounded bg-gray-100 mt-3 px-8 pb-8 pt-6 shadow"
+    >
+      <form
+        class="flex justify-between"
+        hx-post="/todos"
+        hx-trigger="submit"
+        hx-target="#todo-list"
+        hx-swap="innerHTML"
+        x-data="{ input: '' }"
+      >
+        <input
+          class="focus:shadow-outline w-9/12 appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+          id="todo"
+          name="todo"
+          type="text"
+          x-model="input"
+          placeholder="TODO"
+        />
+
+        <button
+          class="w-2/12 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+          type="submit"
+          :disabled="input.trim() === ''"
+          :class="{'opacity-50 cursor-not-allowed': input.trim() === ''}"
+          >ADD
+        </button>
+      </form>
+
+      <hr class="mb-2 mt-4" />
+
+      <section>
+        <div
+          id="todo-list"
+          hx-get="/todos"
+          hx-trigger="load once"
           hx-swap="innerHTML"
-          x-data="{ input: '' }"
-          @submit.prevent="if (input.trim() !== '') { $event.target.reset(); } else { return false; }"
         >
-          <input
-            class="focus:shadow-outline w-9/12 appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
-            id="todo"
-            name="todo"
-            type="text"
-            x-model="input"
-            placeholder="TODO"
-          />
-
-          <button
-            class="w-2/12 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            type="submit">ADD</button
-          >
-        </form>
-
-        <hr class="mb-2 mt-4" />
-
-        <section>
-          <div
-            id="todo-list"
-            hx-get="/todos"
-            hx-trigger="load once"
-            hx-swap="innerHTML"
-          >
-          </div>
-        </section>
-      </div>
-    </body>
+        </div>
+      </section>
+    </div>
+  </body>
 </html>
