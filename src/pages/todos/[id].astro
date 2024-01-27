@@ -1,0 +1,44 @@
+---
+import fs from "node:fs";
+import { todoFile } from "../../const";
+import { z } from "astro:content";
+export const partial = true;
+
+const todoScheme =  z.object({
+  id: z.number(),
+  title: z.string(),
+  complete: z.boolean(),
+});
+type TODO = z.infer<typeof todoScheme>;
+
+const { id } = Astro.params;
+let todos: TODO[];
+try {
+  todos = JSON.parse(fs.readFileSync(todoFile, "utf-8").trim());
+  todos.forEach((todo: TODO) => {
+    todoScheme.parse(todo);
+  });
+  const requestMethod = Astro.request.method;
+  if (requestMethod === "PUT") {
+    // idが一致するtodoのcompleteを反転させる
+    todos = todos.map((todo: TODO) => {
+      if (todo.id === Number(id)) {
+        return { ...todo, complete: !todo.complete };
+      }
+      return todo;
+    });
+    console.log(todos);
+    fs.writeFileSync(todoFile, JSON.stringify(todos));
+    Astro.response.status = 300;
+  } else if (requestMethod === "DELETE") {
+    // idが一致するtodoを削除する
+    todos = todos.filter((todo: TODO) => todo.id !== Number(id));
+    fs.writeFileSync(todoFile, JSON.stringify(todos));
+    Astro.response.status = 200;
+  } else {
+    throw new Error("Method not allowed");
+  }
+} catch (error) {
+  console.error(error);
+}
+---
