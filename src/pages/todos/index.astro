@@ -50,6 +50,9 @@ try {
               class="w-1/12 peer"
               name="complete"
               checked={todo.complete}
+              hx-put=`/todos/${todo.id}`
+              hx-trigger="change"
+              hx-target="this"
             />
             <input type="hidden" name="id" value={todo.id} />
             <label for="todo_1" class="mx-1 w-9/12 peer-checked:line-through">
