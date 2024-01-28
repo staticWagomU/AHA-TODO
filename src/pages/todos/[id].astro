@@ -15,7 +15,6 @@ try {
       }
       return todo;
     });
-    console.log(todos);
     writeTodos(todos);
     Astro.response.status = 300;
   } else if (requestMethod === "DELETE") {
