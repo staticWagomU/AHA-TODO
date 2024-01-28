@@ -1,17 +1,4 @@
 ---
-import fs from "node:fs";
-
-try {
-  if (!fs.existsSync("/tmp")) {
-    fs.mkdirSync("/tmp");
-  }
-  fs.accessSync("/tmp");
-  if (!fs.existsSync("/tmp/todo.json")) {
-    fs.writeFileSync("/tmp/todo.json", "[]");
-  }
-} catch (err) {
-  console.error(err);
-}
 ---
 
 <html lang="ja">
