@@ -28,7 +28,6 @@ export function getTodos(): Todo[] {
     init();
 
     const data = JSON.parse(fs.readFileSync(todoJson, "utf-8"));
-    console.log(data);
     if (!data) return [];
     const todos = data.map((item: any) => {
       const todo = todoScheme.parse(item);
@@ -36,17 +35,13 @@ export function getTodos(): Todo[] {
     });
     return todos;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw new Error("Could not read todo file");
   }
 }
 
 export function writeTodos(todos: Todo[]): void {
   try {
-    // todosの中身をコンソールに表示
-    for (const todo of todos) {
-      console.log(todo);
-    }
     fs.writeFileSync(todoJson, JSON.stringify(todos));
   } catch (e) {
     throw new Error("Could not write todo file");
