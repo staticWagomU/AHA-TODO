@@ -7,17 +7,28 @@ const todoScheme = z.object({
   title: z.string(),
   complete: z.boolean(),
 });
-export type Todo = z.infer<typeof todoScheme>;
 
-export function getTodos(): Todo[] {
+function init(): void {
   try {
     if (!fs.existsSync("/tmp")) {
       fs.mkdirSync("/tmp");
     }
     fs.accessSync("/tmp");
+    if (!fs.existsSync(todoJson)) {
+      fs.writeFileSync(todoJson, "[]");
+    }
+  } catch (e) {
+    throw new Error("Could not init todo file");
+  }
+}
+export type Todo = z.infer<typeof todoScheme>;
+
+export function getTodos(): Todo[] {
+  try {
+    init();
 
     const data = JSON.parse(fs.readFileSync(todoJson, "utf-8"));
-    // dataが空の場合は空の配列を返す
+    console.log(data);
     if (!data) return [];
     const todos = data.map((item: any) => {
       const todo = todoScheme.parse(item);

@@ -1,34 +1,27 @@
 ---
-import fs from "node:fs";
-import { todoFile } from "../../const";
-import { z } from "astro:content";
+import { getTodos, writeTodos, type Todo } from "../../todoFileOperations";
 export const partial = true;
 
-const todoScheme =  z.object({
-  id: z.number(),
-  title: z.string(),
-  complete: z.boolean(),
-});
-type TODO = z.infer<typeof todoScheme>;
-let todos: TODO[] = [];
+let todos: Todo[] = [];
 try {
-  todos = JSON.parse(fs.readFileSync(todoFile, "utf-8").trim());
-  todos.forEach((todo: TODO) => {
-    todoScheme.parse(todo);
-  });
+  todos = getTodos();
+
   const requestMethod = Astro.request.method;
   if (requestMethod === "GET") {
+    Astro.response.status = 200;
   } else if (requestMethod === "POST") {
     const formData = await Astro.request.formData();
-    const todo = formData.get("todo") || "";
-
+    const todo= formData.get("todo");
+    if( typeof todo !== "string" ) throw new Error("todo is not string");
     todos.push({
       id: new Date().getTime(),
       title: todo,
       complete: false,
     });
-    fs.writeFileSync(todoFile, JSON.stringify(todos));
+    writeTodos(todos);
+    Astro.response.status = 201;
   } else {
+    Astro.response.status = 405;
     throw new Error("Method not allowed");
   }
 } catch (error) {
@@ -38,11 +31,11 @@ try {
 
 {
   todos.length ? (
-    <ul class="bg-white space-y-4">
-      {todos.map((todo: TODO) => (
+    <ul class="space-y-4">
+      {todos.map((todo: Todo) => (
         <li>
           <div
-            class="flex justify-between px-3 pb-3 pt-2 shadow-md group"
+            class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group"
             hx-target="submit"
           >
             <input
