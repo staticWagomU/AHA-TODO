@@ -1,26 +1,25 @@
 ---
 import { getTodos, writeTodos, type Todo } from "../../todoFileOperations";
 
-let todos: Todo[] = [];
 const { id } = Astro.params;
 try {
-  todos = getTodos();
+  const todos = getTodos();
 
   const requestMethod = Astro.request.method;
   if (requestMethod === "PUT") {
     // idが一致するtodoのcompleteを反転させる
-    todos = todos.map((todo: Todo) => {
+    const newTodos = todos.map((todo: Todo) => {
       if (todo.id === Number(id)) {
         return { ...todo, complete: !todo.complete };
       }
       return todo;
     });
-    writeTodos(todos);
+    writeTodos(newTodos);
     Astro.response.status = 300;
   } else if (requestMethod === "DELETE") {
     // idが一致するtodoを削除する
-    todos = todos.filter((todo: Todo) => todo.id !== Number(id));
-    writeTodos(todos);
+    const newTodos = todos.filter((todo: Todo) => todo.id !== Number(id));
+    writeTodos(newTodos);
     Astro.response.status = 200;
   } else {
     Astro.response.status = 405;
