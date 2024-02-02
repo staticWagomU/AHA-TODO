@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
     <title>AHA TODO</title>
   </head>
   <body class="min-w-full min-h-full flex justify-center flex-col">
@@ -23,7 +24,7 @@
       class="w-full max-w-2xl mx-auto rounded bg-gray-100 mt-3 px-8 pb-8 pt-6 shadow"
     >
       <form
-        class="flex justify-between"
+        class="flex justify-between gap-2"
         hx-post="/todos"
         hx-trigger="submit"
         hx-target="#todo-list"
@@ -31,7 +32,7 @@
         x-data="{ input: '' }"
       >
         <input
-          class="focus:shadow-outline w-9/12 appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+          class="focus:shadow-outline w-10/12 appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
           id="todo"
           name="todo"
           type="text"

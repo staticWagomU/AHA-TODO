@@ -33,35 +33,72 @@ try {
   todos.length ? (
     <ul class="space-y-4">
       {todos.map((todo: Todo) => (
-        <li>
-          <div
-            class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group"
+        <li
+          x-data="{editing: false}"
+        >
+        <div
+            class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group gap-2"
             hx-target="submit"
+            x-show="!editing"
           >
-            <input
-              type="checkbox"
-              class="w-1/12 peer"
-              name="complete"
-              checked={todo.complete}
-              hx-put=`/todos/${todo.id}`
-              hx-trigger="change"
-              hx-target="this"
-            />
-            <input type="hidden" name="id" value={todo.id} />
-            <label for="todo_1" class="mx-1 w-9/12 peer-checked:line-through">
-              {todo.title}
-            </label>
-            <button
-              class="rounded w-2/12 bg-red-500 px-4 py-0 font-bold text-white"
-              hx-delete=`/todos/${todo.id}`
-              hx-target="closest li"
-              hx-swap="outerHTML swap:1s"
-            >
-              DELETE
-            </button>
+              <input type="hidden" name="id" value={todo.id} />
+              <input
+                type="checkbox"
+                class="flex-grow-0 flex-shrink-0"
+                name="complete"
+                id=`todo_${todo.id}`
+                checked={todo.complete}
+                hx-put=`/todos/${todo.id}`
+                hx-trigger="change"
+                hx-target="this"
+              />
+              <label for=`todo_${todo.id}` class="flex-grow mx-1 peer-checked:line-through">
+                {todo.title}
+              </label>
+              <button
+                class="flex-grow-0 flex-shrink-0 rounded bg-green-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
+                x-on:click="editing = true"
+              >
+                <i data-feather="edit-3"></i>
+              </button>
+              <button
+                class="flex-grow-0 flex-shrink-0 rounded bg-red-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
+                hx-delete=`/todos/${todo.id}`
+                hx-target="closest li"
+                hx-swap="outerHTML swap:1s"
+              >
+                <i data-feather="trash"></i>
+              </button>
+          </div>
+          <div
+            class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group gap-2"
+            hx-target="submit"
+            x-show="editing"
+          >
+              <input
+                type="checkbox"
+                class="flex-grow-0 flex-shrink-"
+                checked={todo.complete}
+                disabled
+              />
+              <input type="text" value={todo.title} class="flex-grow mx-1 peer-checked:line-through border-b-2 border-gray-200" />
+              <button
+                class="flex-grow-0 flex-shrink-0 rounded bg-green-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
+              >
+                <i data-feather="check"></i>
+              </button>
+              <button
+                class="flex-grow-0 flex-shrink-0 rounded bg-red-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
+                x-on:click="editing = false"
+              >
+                <i data-feather="x"></i>
+              </button>
           </div>
         </li>
       ))}
+      <script>
+        feather.replace();
+      </script>
     </ul>
   ) : (
     <p>TODOがありません。</p>
