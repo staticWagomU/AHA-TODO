@@ -1,6 +1,7 @@
 ---
 import { getTodos, writeTodos, type Todo } from "../../todoFileOperations";
 
+export const partial = true;
 const { id } = Astro.params;
 try {
   const todos = getTodos();
@@ -21,9 +22,9 @@ try {
     const newTodos = todos.filter((todo: Todo) => todo.id !== Number(id));
     writeTodos(newTodos);
     Astro.response.status = 200;
-  }else if (requestMethod === "PATCH") {
-    const formData = await Astro.request.formData();
-    const title = formData.get('title');
+  } else if (requestMethod === "PATCH") {
+    const json = await Astro.request.json();
+    const title = json.title;
     if (typeof title !== "string") throw new Error("title is not string");
     const newTodos = todos.map((todo: Todo) => {
       if (todo.id === Number(id)) {

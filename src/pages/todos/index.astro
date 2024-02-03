@@ -34,7 +34,7 @@ try {
     <ul class="space-y-4">
       {todos.map((todo: Todo) => (
         <li
-          x-data="{editing: false}"
+          x-data=`{editing: false, title: "${todo.title}", id: "${todo.id}"}`
         >
         <div
             class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group gap-2"
@@ -52,8 +52,10 @@ try {
                 hx-trigger="change"
                 hx-target="this"
               />
-              <label for=`todo_${todo.id}` class="flex-grow mx-1 peer-checked:line-through">
-                {todo.title}
+              <label
+                for=`todo_${todo.id}`
+                class="flex-grow mx-1 peer-checked:line-through"
+                x-text="title">
               </label>
               <button
                 class="flex-grow-0 flex-shrink-0 rounded bg-green-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
@@ -74,6 +76,8 @@ try {
             class="bg-white flex justify-between px-3 pb-3 pt-2 shadow-md group gap-2"
             hx-target="submit"
             x-show="editing"
+            id=`${todo.id}`
+            x-data="{updateTitle(){patchTodo(id, title)}}"
           >
               <input
                 type="checkbox"
@@ -81,9 +85,13 @@ try {
                 checked={todo.complete}
                 disabled
               />
-              <input type="text" value={todo.title} class="flex-grow mx-1 peer-checked:line-through border-b-2 border-gray-200" />
+              <input
+                type="text"
+                x-model="title"
+                class="flex-grow mx-1 peer-checked:line-through border-b-2 border-gray-200" />
               <button
                 class="flex-grow-0 flex-shrink-0 rounded bg-green-500 px-4 py-0.5 font-bold text-white flex items-center justify-center"
+                x-on:click="updateTitle();editing = false"
               >
                 <i data-feather="check"></i>
               </button>
@@ -96,10 +104,26 @@ try {
           </div>
         </li>
       ))}
-      <script>
-        feather.replace();
-      </script>
     </ul>
+    <script>
+      feather.replace();
+
+      function patchTodo(id, title) {
+        const url = `/todos/${id}`;
+        const data = { title: title };
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
+    </script>
   ) : (
     <p>TODOがありません。</p>
   )
