@@ -7,22 +7,25 @@ try {
   todos = getTodos();
 
   const requestMethod = Astro.request.method;
-  if (requestMethod === "GET") {
-    Astro.response.status = 200;
-  } else if (requestMethod === "POST") {
-    const formData = await Astro.request.formData();
-    const todo= formData.get("todo");
-    if( typeof todo !== "string" ) throw new Error("todo is not string");
-    todos.push({
-      id: new Date().getTime(),
-      title: todo,
-      complete: false,
-    });
-    writeTodos(todos);
-    Astro.response.status = 201;
-  } else {
-    Astro.response.status = 405;
-    throw new Error("Method not allowed");
+  switch(requestMethod) {
+    case "GET":
+      Astro.response.status = 200;
+      break;
+    case "POST":
+      const formData = await Astro.request.formData();
+      const todo= formData.get("todo");
+      if( typeof todo !== "string" ) throw new Error("todo is not string");
+      todos.push({
+        id: new Date().getTime(),
+        title: todo,
+        complete: false,
+      });
+      writeTodos(todos);
+      Astro.response.status = 201;
+      break;
+    default:
+      Astro.response.status = 405;
+      throw new Error("Method not allowed");
   }
 } catch (error) {
   console.error(error);
