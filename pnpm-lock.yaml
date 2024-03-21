@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@astrojs/alpinejs':
-    specifier: ^0.3.2
-    version: 0.3.2(@types/alpinejs@3.13.6)(alpinejs@3.13.5)
+    specifier: ^0.4.0
+    version: 0.4.0(@types/alpinejs@3.13.6)(alpinejs@3.13.5)
   '@astrojs/check':
     specifier: ^0.4.1
     version: 0.4.1(typescript@5.3.3)
@@ -48,8 +48,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.22
     dev: false
 
-  /@astrojs/alpinejs@0.3.2(@types/alpinejs@3.13.6)(alpinejs@3.13.5):
-    resolution: {integrity: sha512-RzGFR1ZgoEtfMv2FypHuTQhCZ7QXeJRE49SyHxUZJf/tksO/HRwPikft8poTPamVbT4EqHPZtRWFFTAgp/u1Jw==}
+  /@astrojs/alpinejs@0.4.0(@types/alpinejs@3.13.6)(alpinejs@3.13.5):
+    resolution: {integrity: sha512-68BY1CA0XuielLW3WdX2sfh9F4sSTnFqQ//IE9AditbiYJ77HJDb4uZx07pTFDtr1jOMU7lCvH+iS9gmNafM1g==}
     peerDependencies:
       '@types/alpinejs': ^3.0.0
       alpinejs: ^3.0.0
